@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/GevaX/FileMagic">
-    <img src="public/logo.svg" alt="Logo" width="300" height="100">
+    <img src="public/logoW.svg" alt="Logo" width="300" height="100">
   </a>
   <p align="center">
     A free unlimited multimedia file convertor.

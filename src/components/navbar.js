@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ThemeSwitch from "@/src/components/ThemeSwitch"
 
 export default function Navbar() {
     return (
@@ -7,12 +8,13 @@ export default function Navbar() {
             <Link href="/">
                 <Image
                     alt="logo"
-                    className="mb-2 cursor-pointer w-35"
-                    src="/logo.svg"
+                    className="mb-2 cursor-pointer w-35 dark:invert"
+                    src="/logoB.svg"
                     height={100}
                     width={170}
                 />
             </Link>
+            <ThemeSwitch />
         </nav>
     );
 }
