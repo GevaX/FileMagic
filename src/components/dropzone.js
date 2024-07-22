@@ -1,18 +1,66 @@
-"use client";
-import ReactDropzone from "react-dropzone";
-import { FiUploadCloud } from "react-icons/fi";
+'use client';
 
-export default function Dropzone() {
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { LuFileSymlink } from "react-icons/lu";
+
+export default function Dropzone({ className }) {
+    const [isDraggingOver, setIsDraggingOver] = useState(false);
+    const [filesDropped, setFilesDropped] = useState(false);
+
+    const onDrop = useCallback(acceptedFiles => {
+        console.log(acceptedFiles);
+        setFilesDropped(true);
+    }, []);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+    useEffect(() => {
+        const handleDragOver = (event) => {
+            event.preventDefault();
+            setIsDraggingOver(true);
+        };
+
+        const handleDragLeave = () => {
+            setIsDraggingOver(false);
+        };
+
+        const handleDrop = () => {
+            setIsDraggingOver(false);
+        };
+
+        document.addEventListener('dragover', handleDragOver);
+        document.addEventListener('dragleave', handleDragLeave);
+        document.addEventListener('drop', handleDrop);
+
+        return () => {
+            document.removeEventListener('dragover', handleDragOver);
+            document.removeEventListener('dragleave', handleDragLeave);
+            document.removeEventListener('drop', handleDrop);
+        };
+    }, []);
+
     return (
-        <ReactDropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
-            {({getRootProps, getInputProps}) => (
-                <section>
-                    <div {...getRootProps()}>
-                        <input {...getInputProps()} />
-                        <p>Drag drop some files here, or click to select files</p>
-                    </div>
-                </section>
-            )}
-        </ReactDropzone>
+        <div {...getRootProps({ className })} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
+            <input {...getInputProps()} />
+            {
+                isDragActive || isDraggingOver ? (
+                    <>
+                        <LuFileSymlink className="size-64" />
+                        <span>Drop the files here ...</span>
+                    </>
+                ) : filesDropped ? (
+                    <>
+                        <span>Files dropped successfully!</span>
+                    </>
+                ) : (
+                    <>
+                        <FaCloudUploadAlt className="size-64" />
+                        <span>Drag & drop some files here, or click to select files</span>
+                    </>
+                )
+            }
+        </div>
     );
 }
