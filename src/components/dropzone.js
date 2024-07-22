@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { LuFileSymlink } from "react-icons/lu";
 import { IoIosClose } from "react-icons/io";
-import bytesToSize from "@/src/utils/bytesToSize"
+import bytesToSize from "@/src/utils/bytesToSize";
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -90,7 +90,7 @@ export default function Dropzone({ className }) {
         setFilesDropped(prevFiles => prevFiles.filter(f => f.path !== file.path));
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, onDropRejected: onReject, accept:accepted_files });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, onDropRejected: onReject, accept: accepted_files });
 
     useEffect(() => {
         const handleDragOver = (event) => {
@@ -117,19 +117,44 @@ export default function Dropzone({ className }) {
         };
     }, []);
 
+    const getFileType = (extension) => {
+        for (const [type, exts] of Object.entries(extensions)) {
+            if (exts.includes(extension)) {
+                return type;
+            }
+        }
+        return null;
+    };
+
+    const getOptionsForFileType = (fileType) => {
+        if (!fileType) return [];
+        return extensions[fileType].map(extension => (
+            <option key={extension} value={extension}>{extension}</option>
+        ));
+    };
+
     return (
         <>
             {filesDropped.length > 0 ? (
                 <div>
-                    {filesDropped.map(file => (
-                        <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-2 py-2 border rounded-xl h-fit ">
-                            <strong>{file.path}</strong> - {bytesToSize(file.size)}
-                            <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
-                                <IoIosClose className="size-14 cursor-pointer hover:fill-black"
-                                            onClick={() => removeFile(file)}/>
+                    {filesDropped.map(file => {
+                        const fileExtension = file.path.split('.').pop().toLowerCase();
+                        const fileType = getFileType(fileExtension);
+                        const options = getOptionsForFileType(fileType);
+
+                        return (
+                            <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-2 py-2 border rounded-xl h-fit ">
+                                <strong>{file.path}</strong> - {bytesToSize(file.size)}
+                                <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
+                                    <IoIosClose className="size-14 cursor-pointer hover:fill-black" onClick={() => removeFile(file)} />
+                                </div>
+                                <select>
+                                    <option value=""></option>
+                                    {options}
+                                </select>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div {...getRootProps({ className })} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
