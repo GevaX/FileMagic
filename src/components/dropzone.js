@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { LuFileSymlink } from "react-icons/lu";
+import { IoIosClose } from "react-icons/io";
 import bytesToSize from "@/src/utils/bytesToSize"
 
 export default function Dropzone({ className }) {
@@ -13,6 +14,10 @@ export default function Dropzone({ className }) {
     const onDrop = useCallback(acceptedFiles => {
         setFilesDropped(acceptedFiles);
     }, []);
+
+    const removeFile = (file) => {
+        setFilesDropped(prevFiles => prevFiles.filter(f => f.path !== file.path));
+    };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -46,8 +51,12 @@ export default function Dropzone({ className }) {
             {filesDropped.length > 0 ? (
                 <div>
                     {filesDropped.map(file => (
-                        <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-4 py-4 space-y-2 border cursor-pointer lg:py-0 rounded-xl h-fit lg:h-20 lg:px-10 lg:flex-nowrap">
+                        <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-2 py-2 border rounded-xl h-fit ">
                             <strong>{file.path}</strong> - {bytesToSize(file.size)}
+                            <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
+                                <IoIosClose className="size-14 cursor-pointer hover:fill-black"
+                                            onClick={() => removeFile(file)}/>
+                            </div>
                         </div>
                     ))}
                 </div>
