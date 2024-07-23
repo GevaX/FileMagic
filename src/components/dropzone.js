@@ -129,25 +129,37 @@ export default function Dropzone({ className }) {
 
     const getOptionsForFileType = (fileType) => {
         if (!fileType) return [];
-        return extensions[fileType].map(extension => (
-            <option key={extension} value={extension}>{extension}</option>
-        ));
-    };
+        if (fileType === 'video') {
+            return extensions["video"].concat(extensions["audio"]).map(extension => (
+                <option key={extension} value={extension}>{extension}</option>
+            ));
+        }
+        if (fileType === 'audio') {
+            return extensions["audio"].map(extension => (
+                <option key={extension} value={extension}>{extension}</option>
+            ));
+        }
+        if (fileType === 'image') {
+            return extensions["image"].map(extension => (
+                <option key={extension} value={extension}>{extension}</option>
+            ));
+        }
+    }
 
     return (
         <>
             {filesDropped.length > 0 ? (
-                <div>
+                <div className="p-10">
                     {filesDropped.map(file => {
                         const fileExtension = file.path.split('.').pop().toLowerCase();
                         const fileType = getFileType(fileExtension);
                         const options = getOptionsForFileType(fileType);
                         return (
-                            <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-2 py-2 border rounded-xl h-fit ">
+                            <div key={file.path} className="relative flex flex-wrap items-center justify-between w-[600px] px-2 py-2 border rounded-xl h-fit ">
                                 <span className="text-2xl text-orange-600">
                                     {fileToIcon(fileType)}
                                 </span>
-                                <Truncate text={file.path} width="250" />
+                                <b><Truncate text={file.path} width="250"/></b><span className="text-sm text-slate-400">{bytesToSize(file.size)}</span>
                                 <select>
                                     <option value=""></option>
                                     {options}
