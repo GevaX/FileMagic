@@ -9,6 +9,7 @@ import bytesToSize from "@/src/utils/bytesToSize";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import fileToIcon from "@/src/utils/fileToIcon";
+import Truncate from 'react-truncate-inside';
 
 const extensions = {
     image: [
@@ -146,7 +147,7 @@ export default function Dropzone({ className }) {
                                 <span className="text-2xl text-orange-600">
                                     {fileToIcon(fileType)}
                                 </span>
-                                <strong>{file.path}</strong> - {bytesToSize(file.size)}
+                                <Truncate text={file.path} width="250" />
                                 <select>
                                     <option value=""></option>
                                     {options}
