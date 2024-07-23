@@ -15,36 +15,10 @@ import loadFfmpeg from "@/src/utils/load-ffmpeg";
 
 const extensions = {
     image: [
-        "jpg",
-        "jpeg",
-        "png",
-        "gif",
-        "bmp",
-        "webp",
-        "ico",
-        "tif",
-        "tiff",
-        "svg",
-        "raw",
-        "tga",
+        "jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "tif", "tiff", "svg", "raw", "tga",
     ],
     video: [
-        "mp4",
-        "m4v",
-        "mp4v",
-        "3gp",
-        "3g2",
-        "avi",
-        "mov",
-        "wmv",
-        "mkv",
-        "flv",
-        "ogv",
-        "webm",
-        "h264",
-        "264",
-        "hevc",
-        "265",
+        "mp4", "m4v", "mp4v", "3gp", "3g2", "avi", "mov", "wmv", "mkv", "flv", "ogv", "webm", "h264", "264", "hevc", "265",
     ],
     audio: ["mp3", "wav", "ogg", "aac", "wma", "flac", "m4a"],
 };
@@ -52,32 +26,30 @@ const extensions = {
 export default function Dropzone({ className }) {
     const accepted_files = {
         "image/*": [
-            ".jpg",
-            ".jpeg",
-            ".png",
-            ".gif",
-            ".bmp",
-            ".webp",
-            ".ico",
-            ".tif",
-            ".tiff",
-            ".raw",
-            ".tga",
+            ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".ico", ".tif", ".tiff", ".raw", ".tga",
         ],
         "audio/*": [],
         "video/*": [],
     };
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [filesDropped, setFilesDropped] = useState([]);
+    const [fileOptions, setFileOptions] = useState({});
     const ffmpegRef = useRef(null);
 
     const load = async () => {
-        const ffmpeg_response = await loadFfmpeg()
-        ffmpegRef.current = ffmpeg_response
-    }
+        const ffmpeg_response = await loadFfmpeg();
+        ffmpegRef.current = ffmpeg_response;
+    };
 
     const onDrop = useCallback(acceptedFiles => {
         setFilesDropped(acceptedFiles);
+        const initialOptions = {};
+        acceptedFiles.forEach(file => {
+            const fileExtension = file.path.split('.').pop().toLowerCase();
+            const fileType = getFileType(fileExtension);
+            initialOptions[file.path] = "";
+        });
+        setFileOptions(initialOptions);
     }, []);
 
     const onReject = useCallback(rejectedFiles => {
@@ -97,6 +69,11 @@ export default function Dropzone({ className }) {
 
     const removeFile = (file) => {
         setFilesDropped(prevFiles => prevFiles.filter(f => f.path !== file.path));
+        setFileOptions(prevOptions => {
+            const newOptions = { ...prevOptions };
+            delete newOptions[file.path];
+            return newOptions;
+        });
     };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, onDropRejected: onReject, accept: accepted_files });
@@ -152,23 +129,19 @@ export default function Dropzone({ className }) {
                 <option key={extension} value={extension}>{extension}</option>
             ));
         }
-    }
-
-    const getInitialState = () => {
-        const value = "";
-        return value;
     };
 
-    const [value, setValue] = useState(getInitialState);
-
-    const handleChange = (e) => {
-        setValue(e.target.value);
+    const handleChange = (filePath, e) => {
+        setFileOptions(prevOptions => ({
+            ...prevOptions,
+            [filePath]: e.target.value
+        }));
     };
 
     const handleConvert = async () => {
         await load();
         for (const file of filesDropped) {
-            const { url, output } = await convert(ffmpegRef.current, file, value);
+            const { url, output } = await convert(ffmpegRef.current, file, fileOptions[file.path]);
             const a = document.createElement("a");
             a.style.display = "none";
             a.href = url;
@@ -194,14 +167,14 @@ export default function Dropzone({ className }) {
                                     <span className="text-2xl text-orange-600">
                                         {fileToIcon(fileType)}
                                     </span>
-                                    <b><Truncate text={file.path} width="250"/></b><span className="text-sm text-slate-400">{bytesToSize(file.size)}</span>
-                                    <select value={value} onChange={handleChange}>
+                                    <b><Truncate text={file.path} width="250" /></b><span className="text-sm text-slate-400">{bytesToSize(file.size)}</span>
+                                    <select value={fileOptions[file.path] || ""} onChange={(e) => handleChange(file.path, e)}>
                                         <option value=""></option>
                                         {options}
                                     </select>
                                     <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
                                         <IoIosClose className="size-14 cursor-pointer hover:fill-black"
-                                                    onClick={() => removeFile(file)}/>
+                                                    onClick={() => removeFile(file)} />
                                     </div>
                                 </div>
                             );
@@ -210,7 +183,7 @@ export default function Dropzone({ className }) {
                     <button className="bg-white text-black justify-center rounded-lg text-2xl px-2 hover:bg-gray-400" onClick={handleConvert}>Convert</button>
                 </>
             ) : (
-                <div {...getRootProps({className})} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
+                <div {...getRootProps({ className })} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
                     <input {...getInputProps()} />
                     {isDragActive || isDraggingOver ? (
                         <>
