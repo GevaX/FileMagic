@@ -7,8 +7,8 @@ import { LuFileSymlink } from "react-icons/lu";
 import { IoIosClose } from "react-icons/io";
 import bytesToSize from "@/src/utils/bytesToSize";
 import { toast } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.css';
+import fileToIcon from "@/src/utils/fileToIcon";
 
 const extensions = {
     image: [
@@ -141,23 +141,25 @@ export default function Dropzone({ className }) {
                         const fileExtension = file.path.split('.').pop().toLowerCase();
                         const fileType = getFileType(fileExtension);
                         const options = getOptionsForFileType(fileType);
-
                         return (
                             <div key={file.path} className="relative flex flex-wrap items-center justify-between w-full px-2 py-2 border rounded-xl h-fit ">
+                                <span className="text-2xl text-orange-600">
+                                    {fileToIcon(fileType)}
+                                </span>
                                 <strong>{file.path}</strong> - {bytesToSize(file.size)}
-                                <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
-                                    <IoIosClose className="size-14 cursor-pointer hover:fill-black" onClick={() => removeFile(file)} />
-                                </div>
                                 <select>
                                     <option value=""></option>
                                     {options}
                                 </select>
+                                <div className="text-sm align-middle group hover:bg-red-300 rounded-full w-8 h-8 flex items-center justify-center">
+                                    <IoIosClose className="size-14 cursor-pointer hover:fill-black" onClick={() => removeFile(file)}/>
+                                </div>
                             </div>
                         );
                     })}
                 </div>
             ) : (
-                <div {...getRootProps({ className })} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
+                <div {...getRootProps({className})} className={`${className} ${isDragActive || isDraggingOver ? 'dragging' : ''}`}>
                     <input {...getInputProps()} />
                     {isDragActive || isDraggingOver ? (
                         <>
