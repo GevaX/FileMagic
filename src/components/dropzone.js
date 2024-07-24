@@ -267,13 +267,13 @@ export default function Dropzone({ className }) {
           <input {...getInputProps()} />
           {isDragActive || isDraggingOver ? (
             <>
-              <LuFileSymlink className="size-32 lg:size-64" />
+              <LuFileSymlink className="size-36 lg:size-64" />
               <span>Drop the files here ...</span>
             </>
           ) : (
             <>
-              <FaCloudUploadAlt className="size-8 lg:size-64" />
-              <spam className="text-2xl">
+              <FaCloudUploadAlt className="size-36 lg:size-64" />
+              <spam className="text-2xl text-wrap text-center">
                 Drag & drop some files here, or click to select files
               </spam>
             </>
