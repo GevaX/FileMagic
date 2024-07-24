@@ -7,7 +7,7 @@
   --foreground: black;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --background: black;
   --foreground: white;
 }

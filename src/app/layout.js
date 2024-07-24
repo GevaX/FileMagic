@@ -2,8 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/src/components/navbar";
 import { Providers } from "@/src/utils/theme-provider";
-import { ToastContainer } from 'react-toastify';
-
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,11 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-      <Providers>
+        <Providers>
           <Navbar />
           {children}
           <ToastContainer />
-      </Providers>
+        </Providers>
       </body>
     </html>
   );
