@@ -224,25 +224,28 @@ export default function Dropzone({ className }) {
               return (
                 <div
                   key={file.path}
-                  className="relative flex h-fit w-[600px] flex-wrap items-center justify-between rounded-xl border px-2 py-2"
+                  className="relative flex h-fit w-[600px] flex-wrap items-center rounded-xl border px-2 py-2 m-2"
                 >
                   <span className="text-2xl text-orange-600">
                     {fileToIcon(fileType)}
                   </span>
-                  <b>
+                  <b className="m-1">
                     <Truncate text={file.path} width="250" />
                   </b>
                   <span className="text-sm text-slate-400">
                     {bytesToSize(file.size)}
                   </span>
-                  <select
-                    value={fileOptions[file.path] || ""}
-                    onChange={(e) => handleChange(file.path, e)}
+                  <div  className="absolute right-20">
+                    <span className="text-gray-400">Convert to</span>
+                    <select className="m-1 border-gray-400 border w-[72px] cursor-pointer"
+                             value={fileOptions[file.path] || ""}
+                             onChange={(e) => handleChange(file.path, e)}
                   >
                     <option value=""></option>
                     {options}
-                  </select>
-                  <div className="group flex h-8 w-8 items-center justify-center rounded-full align-middle text-sm hover:bg-red-300">
+                    </select>
+                  </div>
+                  <div className="group flex h-8 w-8 items-center justify-center rounded-full absolute right-0 text-sm hover:bg-red-300">
                     <IoIosClose
                       className="size-14 cursor-pointer hover:fill-black"
                       onClick={() => removeFile(file)}
