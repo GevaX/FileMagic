@@ -15,7 +15,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot](https://placehold.co/1920x1080)](https://filemagic.vercel.app/)
+[![Screenshot](https://github.com/user-attachments/assets/bdc3253e-ff4c-45fc-990d-e46673ff8a2b)](https://filemagic.vercel.app/)
 
 There are many file convertors online that i usually use but what i found only converts x file type to y file type and that's it.
 Because of that i created a multimedia file convertor that converts most file types **locally - on user device for enhanced speed, privacy and security.**
